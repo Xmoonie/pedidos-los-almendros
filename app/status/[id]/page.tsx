@@ -84,12 +84,16 @@ export default function StatusPage() {
         </div>
 
         {order.status === 'listo' && (
-          <div className="bg-green-900/40 border border-green-700 rounded-xl p-5 text-center">
-            <p className="text-green-400 font-bold text-xl">¡Tu pedido está listo! 🎉</p>
-            <p className="text-green-500 text-sm mt-2">Pasa a recogerlo y paga en efectivo. ¡Gracias!</p>
-          </div>
-        )}
-      </div>
+  <div className="bg-green-900/40 border border-green-700 rounded-xl p-5 text-center space-y-4">
+    <p className="text-5xl">🎉</p>
+    <p className="text-green-400 font-bold text-2xl">Tu pedido esta listo!</p>
+    <p className="text-green-500 text-sm">Pasa a recogerlo y paga en efectivo. Gracias!</p>
+    <a href="/" className="block w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 rounded-xl transition mt-2">
+      Hacer nuevo pedido
+    </a>
+  </div>
+)}
+    </div>
     </main>
   )
 }

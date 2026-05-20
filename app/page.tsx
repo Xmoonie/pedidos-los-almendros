@@ -17,11 +17,12 @@ type CartItem = {
   quantity: number
 }
 
-const SLOTS = Array.from({ length: 16 }, (_, i) => {
-  const hour = Math.floor(i / 4) + 7
-  const min = (i % 4) * 15
+const SLOTS = Array.from({ length: 30 }, (_, i) => {
+  const totalMinutes = 7 * 60 + 30 + i * 15
+  const hour = Math.floor(totalMinutes / 60)
+  const min = totalMinutes % 60
   return `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`
-})
+}).filter(s => s <= '14:45')
 
 export default function Home() {
   const router = useRouter()

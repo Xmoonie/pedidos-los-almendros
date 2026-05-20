@@ -186,11 +186,16 @@ export default function AdminPage() {
       fetchHistory(historialFilter, selectedDate)
       fetchStats()
     })
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
-      fetchOrders()
-      fetchHistory(historialFilter, selectedDate)
-      fetchStats()
-    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+  fetchOrders()
+  fetchHistory(historialFilter, selectedDate)
+  fetchStats()
+})
+.on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
+  fetchOrders()
+  fetchHistory(historialFilter, selectedDate)
+  fetchStats()
+})
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'order_items' }, () => {
       fetchStats()
     })
@@ -198,7 +203,14 @@ export default function AdminPage() {
       console.log('Realtime status:', status)
     })
 
-  return () => { supabase.removeChannel(channel) }
+  const interval = setInterval(() => {
+    fetchOrders()
+  }, 5000)
+
+  return () => { 
+    supabase.removeChannel(channel)
+    clearInterval(interval)
+  }
 }, [auth, fetchOrders, fetchHistory, fetchStats, historialFilter, selectedDate])
   useEffect(() => {
     if (!auth) return

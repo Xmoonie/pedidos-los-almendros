@@ -173,27 +173,33 @@ export default function AdminPage() {
   }, [])
 
   useEffect(() => {
-    if (!auth) return
-    fetchOrders()
-    fetchHistory(historialFilter, selectedDate)
-    fetchProducts()
-    fetchStats()
+  if (!auth) return
+  fetchOrders()
+  fetchHistory(historialFilter, selectedDate)
+  fetchProducts()
+  fetchStats()
 
-    const channel = supabase
-      .channel('admin-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
-        fetchOrders()
-        fetchHistory(historialFilter, selectedDate)
-        fetchStats()
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, () => {
-        fetchStats()
-      })
-      .subscribe()
+  const channel = supabase
+    .channel('admin-realtime')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+      fetchOrders()
+      fetchHistory(historialFilter, selectedDate)
+      fetchStats()
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
+      fetchOrders()
+      fetchHistory(historialFilter, selectedDate)
+      fetchStats()
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'order_items' }, () => {
+      fetchStats()
+    })
+    .subscribe((status) => {
+      console.log('Realtime status:', status)
+    })
 
-    return () => { supabase.removeChannel(channel) }
-  }, [auth, fetchOrders, fetchHistory, fetchStats, historialFilter, selectedDate])
-
+  return () => { supabase.removeChannel(channel) }
+}, [auth, fetchOrders, fetchHistory, fetchStats, historialFilter, selectedDate])
   useEffect(() => {
     if (!auth) return
     fetchHistory(historialFilter, selectedDate)

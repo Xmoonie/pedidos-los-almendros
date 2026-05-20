@@ -208,6 +208,7 @@ export default function AdminPage() {
   const advanceStatus = async (order: Order) => {
     const next = order.status === 'recibido' ? 'en_preparacion' : 'listo'
     await supabase.from('orders').update({ status: next }).eq('id', order.id)
+    fetchOrders()
   }
 
   const openNewProduct = () => {
